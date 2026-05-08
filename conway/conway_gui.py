@@ -1,3 +1,8 @@
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning)
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
 import pygame
 import collections
 
