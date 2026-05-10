@@ -137,7 +137,14 @@ while running:
 
     # --- update preds ---
     for pred in preds:
-        pred.update(boids)
+        # Pos & Vel Calc (Vel: to render direction)
+        last_pos = pred.pos
+        curr_pos = math.Vector2(pygame.mouse.get_pos())
+        curr_vel = curr_pos - last_pos
+
+        pred.pos = curr_pos
+        # Preventing reset to default direction when not moving
+        pred.vel = pred.vel if curr_vel.length_squared() == 0 else curr_vel
         pred.draw(screen)
 
     pygame.display.flip()
