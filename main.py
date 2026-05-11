@@ -19,10 +19,11 @@ directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 def is_valid(r, c):
     return 0 <= r < GW and 0 <= c < GH
 
-def find_path(snk: deque[Vector2], apl: Vector2):
+def find_path(snk: deque[Vector2], apl: Vector2, ignore_tail=False):
     start = int(snk[0].x), int(snk[0].y)
 
-    body_set = set((int(v.x), int(v.y)) for i, v in enumerate(snk) if i > 0)
+    body_set = set((int(v.x), int(v.y)) for i, v in enumerate(snk)
+                   if i > 0 and not (ignore_tail and i == len(snk) - 1))
 
     dq = deque()
     visited = {start}
@@ -101,12 +102,17 @@ while running:
             while (apple.x, apple.y) in full_body:
                 apple = Vector2(r.randint(0, GW - 1), r.randint(0, GH - 1))
     else:
-        direction = survive(snake)
+        direction = find_path(snake, snake[-1], True)
         if direction:
             snake.appendleft(snake[0] + direction)
             snake.pop()
         else:
-            pass
+            direction = survive(snake)
+            if direction:
+                snake.appendleft(snake[0] + direction)
+                snake.pop()
+            else:
+                pass
 
     pygame.display.flip()
     clock.tick(30)
